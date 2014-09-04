@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <title>HTML5 File API</title>
+    <!-- <style>
+      html { height: 100% }
+      body { height: 100%; margin: 0; padding: 0 }
+      #map-canvas { height: 100% }
+      h1 { position:absolute; }
+    </style> -->
+  </head>
+  <body>
+    <div><form class="form-horizontal well">
+      <legend>
+        <h3>
+          <div id="title">HTML5 File API</div>
+        </h3>
+      </legend>
+      <fieldset>
+          <label for="csvFileInput"> <strong>CSV File:</strong>
+          </label>
+          <input type="file" id="csvFileInput" onchange="handleFiles(this.files)"
+          accept=".csv">
+      </fieldset>
+    </form></div>
+  </body>
+  <script type="text/javascript">
+function handleFiles(files) {
+  // Check for the various File API support.
+  if (window.FileReader) {
+    // FileReader are supported.
+    getAsText(files[0]);
+  } else {
+    alert('FileReader is not supported in this browser.');
+  }
+}
+
+function getAsText(fileToRead) {
+  var reader = new FileReader();
+  // Handle errors load
+  reader.onload = loadHandler;
+  reader.onerror = errorHandler;
+  // Read file into memory as UTF-8      
+  reader.readAsText(fileToRead);
+}
+
+function loadHandler(event) {
+  var csv = event.target.result;
+  processData(csv);             
+}
+
+function processData(csv) {
+    var allTextLines = csv.split(/\r\n|\n/);
+    var lines = [];
+    while (allTextLines.length) {
+        lines.push(allTextLines.shift().split(','));
+    }
+  console.log(lines);
+  drawOutput(lines);
+}
+
+function errorHandler(evt) {
+  if(evt.target.error.name == "NotReadableError") {
+    alert("Cannot read file!");
+  }
+}
+
+// function drawOutput(lines){
+//   //Clear previous data
+//   document.getElementById("output").innerHTML = "";
+//   var table = document.createElement("table");
+//   for (var i = 0; i < lines.length; i++) {
+//     var row = table.insertRow(-1);
+//     for (var j = 0; j < lines[i].length; j++) {
+//       var firstNameCell = row.insertCell(-1);
+//       firstNameCell.appendChild(document.createTextNode(lines[i][j]));
+//     }
+//   }
+//   document.getElementById("output").appendChild(table);
+// }
+
+function isNormalInteger(str) {
+  var n = ~~Number(str);
+  return String(n) === str && n >= 0;
+}
+
+function drawOutput(lines){
+  var items = [];
+  for (var i = 0; i < lines.length; ++i) {
+    var row = {};
+    str_lon = lines[i][2];
+    str_lat = lines[i][3];
+    str_count = lines[i][6];
+    if (!isNormalInteger(str_count)) continue;
+    row["lng"] = parseFloat(str_lon);
+    row["lat"] = parseFloat(str_lat);
+    row["count"] = parseInt(str_count);
+    items.push(row);
+  }
+  console.log(items);
+}
+  </script>
+</html>
