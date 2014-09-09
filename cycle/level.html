@@ -93,7 +93,7 @@ function drawOutput(lines){
     var row = {};
     str_lon = lines[i][2];
     str_lat = lines[i][3];
-    str_count = lines[i][5];
+    str_count = lines[i][6];
     if (!isNormalInteger(str_count)) continue;
     row["lng"] = parseFloat(str_lon);
     row["lat"] = parseFloat(str_lat);
