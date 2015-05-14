@@ -60,7 +60,9 @@ var Store = (function StoreClosure() {
           store[x][y] = value;
           radi[x][y] = radius;
         } else {
-          store[x][y] += value;
+          //store[x][y] += value;
+        if (value < store[x][y])
+	          store[x][y] = value;
         }
 
         if (store[x][y] > max) {

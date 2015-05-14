@@ -132,7 +132,7 @@ print "var avgLon = ".$avg_lon.";".PHP_EOL;
   heatmap = new HeatmapOverlay(map, 
     {
       // radius should be small ONLY if scaleRadius is true (or small radius is intended)
-      "radius": 0.0001,
+      "radius": 0.00015,
       "maxOpacity": 0.5, 
       // scales the radius based on map zoom
       "scaleRadius": true, 
