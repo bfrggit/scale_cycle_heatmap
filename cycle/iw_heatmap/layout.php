@@ -66,9 +66,12 @@ function isNormalInteger(str) {
 }
 
 function drawOutput(){
+  var items = [];
 
 <?php
-$ls_data = array();
+$avg_lat = 0;
+$avg_lon = 0;
+$count = 0;
 while($row = $res->fetch_assoc()):
 	$timestamp = $row["timestamp"];
 	$geotag = json_decode(str_replace("NaN", "null", $row["geotag"]), true);
@@ -76,47 +79,35 @@ while($row = $res->fetch_assoc()):
 	$lat = $geotag["lat"];
 	$lon = $geotag["lon"];
 	$map_value = $value[$attr];
-	if($lat == 0 && $lon == 0)
+	if($lat == 0 || $lon == 0)
 		continue;
-	$ls_data[] = array(
-			"lat" => $lat,
-			"lon" => $lon,
-			"count" => $map_value
-		);
+	$avg_lat += $lat;
+	$avg_lon += $lon;
+	$count += 1;
+	print "items.push(".json_encode(array("lat" => $lat, "lon" => $lon, "count" => $map_value)).");".PHP_EOL;
 endwhile;
-print "var items = ".str_replace("{", "\n{", json_encode($ls_data)).";".PHP_EOL;
+if($count > 0) {
+	$avg_lat /= $count;
+	$avg_lon /= $count;
+}
 ?>
 
-  console.log("Data collected and converted");
   console.log(items);
   drawMap(items);
 }
 
 
 function drawMap(items){
-  console.log("Layout started");
-  /*
+/*
   // map center: Aldrich Park, University of California, Irvine
   var myLatlng = new google.maps.LatLng(33.646052, -117.842745);
   */
 
   // map center
-
 <?php
-$avg_lat = 0;
-$avg_lon = 0;
-foreach($ls_data as $item):
-	$avg_lat += $item["lat"];
-	$avg_lon += $item["lon"];
-endforeach;
-if(count($ls_data) > 0) {
-	$avg_lat /= count($ls_data);
-	$avg_lon /= count($ls_data);
-}
 print "var avgLat = ".$avg_lat.";".PHP_EOL;
 print "var avgLon = ".$avg_lon.";".PHP_EOL;
 ?>
-
   var myLatlng = new google.maps.LatLng(avgLat, avgLon);
 
   // map options,
