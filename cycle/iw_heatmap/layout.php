@@ -51,8 +51,8 @@ if($mysqli->connect_errno)
 $like_str = "\"essid\": \"".$essid."\"";
 $like_str = str_replace("'", "''", $like_str);
 $like_str = str_replace("_", "\_", $like_str);
-$res = $mysqli->query("SELECT timestamp, geotag, value_json FROM {$tb_name} WHERE event='{$tp_name}' AND value_json LIKE '%{$like_str}%'");
-print "<p>Fetched number of record(s): ".$res->num_rows."</p>".PHP_EOL;
+$res = $mysqli->query("SELECT timestamp, geotag, value_json FROM {$tb_name} WHERE event='{$tp_name}' AND geotag IS NOT NULL AND value_json LIKE '%{$like_str}%'");
+print "<p>Fetched number of geotagged record(s): ".$res->num_rows."</p>".PHP_EOL;
 ?>
 
 		<button onclick="drawOutput()">Layout</button>
