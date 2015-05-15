@@ -28,6 +28,7 @@ for($j = 0; $j < $tb_count; ++$j):
 	else
 		$types[] = $_POST["tb_name_{$j}"];
 endfor;
+
 for($j = 0; $j < $tr_count; ++$j):
 	if(!isset($_POST["tr_b_{$j}"])) $is_valid = false;
 	elseif(!isset($_POST["tr_e_{$j}"])) $is_valid = false;
@@ -39,6 +40,8 @@ for($j = 0; $j < $tr_count; ++$j):
 				"name" => $_POST["ntb_name_{$j}"]
 			);
 endfor;
+if(!$is_valid)
+	die("<p>Invalid rquest to this URL.</p>".PHP_EOL);
 
 print "<p>Using database: {$db_name}</p>".PHP_EOL;
 
@@ -68,15 +71,19 @@ foreach($types as $type):
 	print "<div style=\"padding-left: 24px\">";
 	foreach($timeranges as $range):
 		$ntb_name = $range["name"];
+		if(empty($ntb_name) || strlen(trim($ntb_name)) < 1)
+			continue;
 		$res = $mysqli->query("SELECT count(*) AS count FROM {$tb_name} WHERE timestamp >= {$range["b"]} AND timestamp <= {$range["e"]}");
 		if(!$res) continue;
 		$row = $res->fetch_assoc();
-		print "<p>Fetched number of record(s): {$row["count"]}</p>".PHP_EOL;
+		print "<p>";
+		print "Fetched number of record(s): {$row["count"]}<br>".PHP_EOL;
 		$res = $mysqli->query("SELECT count(*) AS count FROM {$tb_name} WHERE timestamp >= {$range["b"]} AND timestamp <= {$range["e"]} AND (geotag IS NOT NULL OR (event = 'location_update' AND value_json IS NOT NULL))");
 		if(!$res) continue;
 		$row = $res->fetch_assoc();
-		print "<p>Fetched number of geotagged record(s): {$row["count"]}</p>".PHP_EOL;
-		print "<p>Copy {$row["count"]} record(s) to: {$ndb_name}.{$ntb_name}</p>".PHP_EOL;
+		print "Fetched number of geotagged record(s): {$row["count"]}<br>".PHP_EOL;
+		print "Copy {$row["count"]} record(s) to: {$ndb_name}.{$ntb_name}".PHP_EOL;
+		print "</p>";
 	endforeach;
 	print "</div>";
 endforeach;
