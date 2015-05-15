@@ -29,17 +29,23 @@ for($j = 0; $j < $tb_count; ++$j):
 		$types[] = $_POST["tb_name_{$j}"];
 endfor;
 
+$tb_create_ls = array();
 for($j = 0; $j < $tr_count; ++$j):
 	if(!isset($_POST["tr_b_{$j}"])) $is_valid = false;
 	elseif(!isset($_POST["tr_e_{$j}"])) $is_valid = false;
 	elseif(!isset($_POST["ntb_name_{$j}"])) $is_valid = false;
-	else
+	else {
 		$timeranges[] = array(
 				"b" => $_POST["tr_b_{$j}"],
 				"e" => $_POST["tr_e_{$j}"],
 				"name" => $_POST["ntb_name_{$j}"]
 			);
+		$ntb_name = $_POST["ntb_name_{$j}"];
+		if(!empty($ntb_name) && strlen(trim($ntb_name)) > 0)
+			$tb_create_ls[] = $ntb_name;
+	}
 endfor;
+$tb_create_ls = array_unique($tb_create_ls);
 if(!$is_valid)
 	die("<p>Invalid rquest to this URL.</p>".PHP_EOL);
 
@@ -66,8 +72,16 @@ foreach($types as $type):
 
 	$tb_name = "type_".$type;
 	$ndb_name = "sct_archive_".$type;
-	print "<p>Copy from: {$db_name}.{$tb_name}".PHP_EOL;
-	print "<p>Copy to: {$ndb_name}".PHP_EOL;
+
+	print "<p>";
+	foreach($tb_create_ls as $tb_create):
+		$create_res = $mysqli->query("CREATE TABLE {$ndb_name}.{$tb_create} (id INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY, sensor VARCHAR(16) NOT NULL, event VARCHAR(64) NOT NULL, priority INTEGER NOT NULL, timestamp DOUBLE PRECISION NOT NULL, geotag LONGTEXT, value_json LONGTEXT NOT NULL, upload_time DOUBLE PRECISION)");
+		print "Created table: ".$ndb_name.".".$tb_create."<br>".PHP_EOL;
+	endforeach;
+	print "</p>";
+
+	print "<p>Copying from: {$db_name}.{$tb_name}<br>".PHP_EOL;
+	print "Copying to: {$ndb_name}</p>".PHP_EOL;
 	print "<div style=\"padding-left: 24px\">";
 	foreach($timeranges as $range):
 		$ntb_name = $range["name"];
@@ -82,11 +96,14 @@ foreach($types as $type):
 		if(!$res) continue;
 		$row = $res->fetch_assoc();
 		print "Fetched number of geotagged record(s): {$row["count"]}<br>".PHP_EOL;
-		print "Copy {$row["count"]} record(s) to: {$ndb_name}.{$ntb_name}".PHP_EOL;
+
+		$res = $mysqli->query("INSERT INTO {$ndb_name}.{$ntb_name} SELECT * FROM {$tb_name} WHERE timestamp >= {$range["b"]} AND timestamp <= {$range["e"]} AND (geotag IS NOT NULL OR (event = 'location_update' AND value_json IS NOT NULL))");
+		print "Copied {$row["count"]} record(s) to: {$ndb_name}.{$ntb_name}".PHP_EOL;
 		print "</p>";
 	endforeach;
 	print "</div>";
 endforeach;
 ?>
+	<p>Done.</p>
 </body>
 </html>

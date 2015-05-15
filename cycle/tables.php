@@ -4,7 +4,7 @@
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 </head>
 
-<body>
+<body style="padding-top: 8px">
 <?php
 ini_set("display_errors", 1);
 
@@ -162,6 +162,8 @@ for($j = 0; $j < count($timeranges) - 1; ++$j):
 	print date("m-d h:i A T", $timetoshow[$j * 2 + 1]);
 	print "<br>".PHP_EOL;
 endfor;
+if(count($timeranges) < 2)
+	print "Empty list.".PHP_EOL;
 print "</p>";
 ?>
 
@@ -215,6 +217,8 @@ for($j = 0; $j < count($timeranges) - 1; ++$j):
 		/>";
 	print "<br>".PHP_EOL;
 endfor;
+if(count($timeranges) < 2)
+	print "Empty list.".PHP_EOL;
 ?>
 		</p>
 		<input
@@ -222,7 +226,52 @@ endfor;
 			id="submit_dump"
 			name="submit_dump"
 			value="Dump"
-			<?php if($db_black || $res->num_rows < 1) print "disabled"; ?>
+			<?php if(count($timeranges) < 2) print "disabled"; ?>
+		/>
+	</form>
+
+	<p>Please clean up the database after maintenance: </p>
+	<form id="cl_tb_form" action="methods/delete_tb.php" method="POST">
+		<input
+			type="hidden"
+			name="db_name_"
+			value=<?php print "\"{$db_name}\""; ?>
+		/>
+		<input
+			type="hidden"
+			name="tb_count_"
+			value=<?php print "\"".count($type_in_db)."\""; ?>
+		/>
+<?php
+for($j = 0; $j < count($type_in_db); ++$j):
+	print "<input
+			type=\"hidden\"
+			name=\"tb_name_{$j}\"
+			value={$type_in_db[$j]}
+		/>".PHP_EOL;
+endfor;
+?>
+		<p>Delete dumped table(s): </p>
+		<input
+			type="submit"
+			id="submit_cl_tb"
+			name="submit_cl_tb"
+			value="Delete"
+			<?php if(count($type_in_db) < 1) print "disabled"; ?>
+		/>
+	</form>
+	<form id="cl_all_form" action="methods/erase_db.php" method="POST">
+		<input
+			type="hidden"
+			name="db_name_"
+			value=<?php print "\"{$db_name}\""; ?>
+		/>
+		<p>Erase everything from current database: </p>
+		<input
+			type="submit"
+			id="submit_cl_all"
+			name="submit_cl_all"
+			value="Erase"
 		/>
 	</form>
 </body>
