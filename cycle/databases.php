@@ -52,5 +52,32 @@ if($res->num_rows < 1)
 			<?php if($res->num_rows < 1) print "disabled"; ?>
 		/>
 	</form>
+	
+	<p>SCALE daemon is 
+<?php
+exec("/usr/sbin/service scale_daemon status 2>&1", $e_output, $e_return);
+//var_dump($e_return);
+if($e_return == 0)
+	print "running.";
+else
+	print "not running.";
+?>
+	</p>
+
+<?php
+if($e_return == 0):
+	print "<p>Please stop SCALE daemon: </p>
+		<form id=\"daemon_stop\" action=\"methods/scale_daemon_stop.php\" method=\"GET\">
+			<input
+				type=\"submit\"
+				id=\"submit_daemon_stop\"
+				name=\"submit_daemon_stop\"
+				value=\"Stop\"
+			/>
+		</form>
+		";
+endif;
+?>
+
 </body>
 </html>
