@@ -75,8 +75,11 @@ foreach($types as $type):
 
 	print "<p>";
 	foreach($tb_create_ls as $tb_create):
-		$create_res = $mysqli->query("CREATE TABLE {$ndb_name}.{$tb_create} (id INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY, sensor VARCHAR(16) NOT NULL, event VARCHAR(64) NOT NULL, priority INTEGER NOT NULL, timestamp DOUBLE PRECISION NOT NULL, geotag LONGTEXT, value_json LONGTEXT NOT NULL, upload_time DOUBLE PRECISION, condition LONGTEXT)");
-		print "Created table: ".$ndb_name.".".$tb_create."<br>".PHP_EOL;
+		$create_res = $mysqli->query("CREATE TABLE {$ndb_name}.{$tb_create} (id INTEGER AUTO_INCREMENT NOT NULL PRIMARY KEY, sensor VARCHAR(16) NOT NULL, event VARCHAR(64) NOT NULL, priority INTEGER NOT NULL, timestamp DOUBLE PRECISION NOT NULL, geotag LONGTEXT, value_json LONGTEXT NOT NULL, upload_time DOUBLE PRECISION, `condition` LONGTEXT)");
+		if(!$create_res)
+			print "Failed creating table with error: ".$mysqli->error."<br>".PHP_EOL;
+		else
+			print "Created table: ".$ndb_name.".".$tb_create."<br>".PHP_EOL;
 	endforeach;
 	print "</p>";
 
