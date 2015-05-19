@@ -108,5 +108,6 @@ foreach($types as $type):
 endforeach;
 ?>
 	<p>Done.</p>
+	<p>Please <a href="/">start over</a>.</p>
 </body>
 </html>

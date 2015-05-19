@@ -21,5 +21,6 @@ else
 	print "not running.";
 ?>
 	</p>
+	<p>Please <a href="/">start over</a>.</p>
 </body>
 </html>

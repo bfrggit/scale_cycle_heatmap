@@ -34,5 +34,6 @@ while($row = $res->fetch_assoc()):
 endwhile;
 ?>
 	<p>Done.</p>
+	<p>Please <a href="/">start over</a>.</p>
 </body>
 </html>
