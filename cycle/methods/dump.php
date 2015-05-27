@@ -90,12 +90,12 @@ foreach($types as $type):
 		$ntb_name = $range["name"];
 		if(empty($ntb_name) || strlen(trim($ntb_name)) < 1)
 			continue;
-		$res = $mysqli->query("SELECT count(*) AS count FROM {$tb_name} WHERE timestamp >= {$range["b"]} AND timestamp <= {$range["e"]}");
+		$res = $mysqli->query("SELECT COUNT(*) AS count FROM {$tb_name} WHERE timestamp >= {$range["b"]} AND timestamp <= {$range["e"]}");
 		if(!$res) continue;
 		$row = $res->fetch_assoc();
 		print "<p>";
 		print "Fetched number of record(s): {$row["count"]}<br>".PHP_EOL;
-		$res = $mysqli->query("SELECT count(*) AS count FROM {$tb_name} WHERE timestamp >= {$range["b"]} AND timestamp <= {$range["e"]} AND (geotag IS NOT NULL OR (event = 'location_update' AND value_json IS NOT NULL))");
+		$res = $mysqli->query("SELECT COUNT(*) AS count FROM {$tb_name} WHERE timestamp >= {$range["b"]} AND timestamp <= {$range["e"]} AND (geotag IS NOT NULL OR (event = 'location_update' AND value_json IS NOT NULL))");
 		if(!$res) continue;
 		$row = $res->fetch_assoc();
 		print "Fetched number of geotagged record(s): {$row["count"]}<br>".PHP_EOL;

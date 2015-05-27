@@ -48,10 +48,10 @@ if(!$is_valid) {
 */
 //print "<p>Format of selected table is good.</p>".PHP_EOL;
 
-$res = $mysqli->query("SELECT count(*) AS count FROM {$tb_name} WHERE event='{$tp_name}'");
+$res = $mysqli->query("SELECT COUNT(*) AS count FROM {$tb_name} WHERE event='{$tp_name}'");
 $row = $res->fetch_assoc();
 print "<p>Fetched number of record(s): ".$row["count"]."</p>".PHP_EOL;
-$res_n = $mysqli->query("SELECT count(*) AS count FROM {$tb_name} WHERE event='{$tp_name}' AND value_json IS NOT NULL");
+$res_n = $mysqli->query("SELECT COUNT(*) AS count FROM {$tb_name} WHERE event='{$tp_name}' AND value_json IS NOT NULL");
 $row_n = $res_n->fetch_assoc();
 print "<p>Fetched number of geotagged record(s): ".$row_n["count"]."</p>".PHP_EOL;
 ?>

@@ -1,10 +1,11 @@
+<!DOCTYPE html>
 <html>
 <head>
 	<title>ScaleCycle Visualization</title>
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 </head>
 
-<body style="padding-top: 8px">
+<body>
 <?php
 ini_set("display_errors", 1);
 
@@ -54,7 +55,7 @@ if(!isset($db_black) || !$db_black)
 $type_tbs = array();
 while($row = $res->fetch_assoc()) {
 	$tb_name = $row["Tables_in_{$db_name}"];
-	$res_t = $mysqli->query("SELECT count(*) AS count FROM {$tb_name}");
+	$res_t = $mysqli->query("SELECT COUNT(*) AS count FROM {$tb_name}");
 	$tb_count = NULL;
 	if($res_t) {
 		//var_dump($res_t);
@@ -89,6 +90,14 @@ if($res->num_rows < 1)
 			<?php if($db_black || $res->num_rows < 1) print "disabled"; ?>
 		/>
 	</form>
+
+<?php
+if($db_black || $res->num_rows < 1):
+	print "<p>Please <a href=\"/\">start over</a>.</p>".PHP_EOL;
+endif;
+?>
+
+	<p>Or opt to <a href=<?php print "\"tables_x.php?db_name_={$db_name}\""?>>choose multiple tables</a>.</p>
 
 <?php
 include $_SERVER["DOCUMENT_ROOT"]."/db_maintain.php";
