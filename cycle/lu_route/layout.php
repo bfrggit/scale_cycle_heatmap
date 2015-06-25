@@ -14,6 +14,7 @@
       h1 { position:absolute; }
     </style>
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+    <script src="/js/distance.js"></script>
 </head>
 
 <body>
@@ -99,9 +100,15 @@ if($count > 0) {
   drawMap(items);
 }
 
+/*
 function squareDist(pFrom, pTo){
   return (pFrom.lat()-pTo.lat())*(pFrom.lat()-pTo.lat())
     +(pFrom.lng()-pTo.lng())*(pFrom.lng()-pTo.lng());
+}
+*/
+
+function pointDist(pFrom, pTo){
+	return distance(pFrom.lat(), pFrom.lng(), pTo.lat(), pTo.lng(), "K") * 1000;
 }
 
 function drawMap(items){
@@ -141,11 +148,11 @@ print "var avgLon = ".$avg_lon.";".PHP_EOL;
   // });
 
   var segments = [];
-  var segDist = 0.0003;
+  var segDist = 20.0;
   var connects = [];
 
   for (var i = 0; i < items.length; ++i) {
-    if(i == 0 || squareDist(items[i-1], items[i]) > segDist*segDist){
+    if(i == 0 || pointDist(items[i-1], items[i]) > segDist){
       segments.push([]);
       if(i > 0){
         connects.push([
@@ -168,7 +175,7 @@ print "var avgLon = ".$avg_lon.";".PHP_EOL;
       new google.maps.Polyline({
         path: segments[i],
         geodesic: true,
-        strokeColor: '#FF0000',
+        strokeColor: '#CC0000',
         strokeOpacity: 1.0,
         strokeWeight: 5,
         map: map
@@ -186,8 +193,8 @@ print "var avgLon = ".$avg_lon.";".PHP_EOL;
     new google.maps.Polyline({
       path: connects[i],
       geodesic: true,
-      strokeColor: '#FF0000',
-      strokeOpacity: 1.0,
+      strokeColor: '#EE4444',
+      strokeOpacity: 0.7,
       strokeWeight: 2,
       map: map
     });
